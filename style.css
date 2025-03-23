@@ -1,0 +1,172 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #fff8f0;
+    color: #333;
+}
+
+header {
+    background-color: #f7c59f;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+#searchInput {
+    margin-top: 10px;
+    padding: 10px;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+section {
+    padding: 20px;
+}
+
+#trending, #holiday-prep {
+    background-color: #fff;
+    border-top: 2px solid #f7c59f;
+}
+
+footer {
+    padding: 20px;
+    text-align: center;
+}
+
+footer button {
+    background-color: #f7c59f;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+form {
+    background: #fffaf0;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: auto;
+}
+
+form textarea, form input[type="file"] {
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+form button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #f7c59f;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#uploaded-recipes {
+    padding: 20px;
+    background-color: #fff8f0;
+}
+
+.recipe-card {
+    background: #ffffff;
+    padding: 15px;
+    margin: 15px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    max-width: 600px;
+}
+
+.recipe-card img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.recipe-card button {
+    margin: 10px 5px 0 0;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #ffe1a8;
+}
+
+.delete-btn {
+    background-color: #f7a8a8;
+}
+
+#filterDropdown {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 5px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  #filterDropdown label {
+    font-weight: bold;
+  }
+  
+  #filterDropdown select {
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  #leafletMap {
+    height: 400px;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+  }
+
+  #exploreSection {
+    position: relative;
+    z-index: 1;
+  }
+  
+  #filterDropdown {
+    position: relative;
+    z-index: 10; /* Higher than the map! */
+    background-color: #fffaf0;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 0 auto;
+    max-width: 800px;
+  }
+  
+  #filterDropdown select {
+    z-index: 20;
+    position: relative;
+  }
+
+  #logo {
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+    padding: 10px;
+  }
+  

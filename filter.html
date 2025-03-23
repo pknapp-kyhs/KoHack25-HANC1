@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Filtered Recipes</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🔍 Filtered Recipes</h1>
+  </header>
+  <main>
+    <div id="results"></div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const region = params.get('region');
+    const kashrut = params.get('kashrut');
+    const holiday = params.get('holiday');
+
+    const resultsDiv = document.getElementById('results');
+    const recipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+
+    const matches = recipes.filter(recipe => {
+      return (!region || recipe.region === region) &&
+             (!kashrut || recipe.kashrut === kashrut) &&
+             (!holiday || recipe.holiday === holiday);
+    });
+
+    if (matches.length === 0) {
+      resultsDiv.innerHTML = "<p>No matching recipes found.</p>";
+    } else {
+      matches.forEach(recipe => {
+        const card = document.createElement('div');
+        card.className = 'recipe-card';
+        
+        card.innerHTML = `
+  <h3>${recipe.title}</h3>
+  ${recipe.image ? `<img src="${recipe.image}" alt="Recipe Image">` : ""}
+  <p><strong>🌍 Region:</strong> ${recipe.region} | <strong>🧀 Kosher Type:</strong> ${recipe.kashrut} | <strong>🕯️ Holiday:</strong> ${recipe.holiday}</p>
+  <h4>📝 Family Story</h4>
+  <p>${recipe.story}</p>
+  <h4>🧂 Ingredients</h4>
+  <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+  <h4>🍳 Instructions</h4>
+  <p>${recipe.instructions}</p>
+  <p><em>Posted by: ${recipe.author}</em></p>
+  <button class="edit-btn">Edit</button>
+  <button class="delete-btn">Delete</button>
+`;
+
+        resultsDiv.appendChild(card);
+        card.querySelector('.delete-btn').addEventListener('click', () => {
+  const allRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+  const updated = allRecipes.filter(r =>
+    r.title !== recipe.title ||
+    r.story !== recipe.story
+  );
+  localStorage.setItem('recipes', JSON.stringify(updated));
+  card.remove();
+});
+
+card.querySelector('.edit-btn').addEventListener('click', () => {
+  alert("Edit only works on the main page for now! Please copy your text and re-upload it from there.");
+});
+
+      });
+    }
+  </script>
+</body>
+</html>
