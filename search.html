@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🔍 Search Results</h1>
+    </header>
+
+    <main>
+        <div id="searchResults"></div>
+    </main>
+
+    <script>
+        const resultsDiv = document.getElementById('searchResults');
+        const searchValue = new URLSearchParams(window.location.search).get('query').toLowerCase();
+
+        const storedRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+
+        const matches = storedRecipes.filter(r => r.title.toLowerCase().includes(searchValue));
+
+        if (matches.length === 0) {
+            resultsDiv.innerHTML = `<p>No matching recipes found for "${searchValue}"</p>`;
+        } else {
+            matches.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+
+                card.innerHTML = `
+                    <h3>${recipe.title}</h3>
+                    ${recipe.image ? `<img src="${recipe.image}">` : ""}
+                    <h4>📝 Family Story</h4>
+                    <p>${recipe.story}</p>
+                    <h4>🧂 Ingredients</h4>
+                    <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+                    <h4>🍳 Instructions</h4>
+                    <p>${recipe.instructions}</p>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
