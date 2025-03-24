@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <header>
+        
+      </header>
+      
   <meta charset="UTF-8" />
   <title>Filtered Recipes</title>
   <link rel="stylesheet" href="style.css" />
@@ -10,6 +14,7 @@
     <h1>🔍 Filtered Recipes</h1>
   </header>
   <main>
+    <div id="regionIntro"></div>
     <div id="results"></div>
   </main>
 
@@ -18,6 +23,27 @@
     const region = params.get('region');
     const kashrut = params.get('kashrut');
     const holiday = params.get('holiday');
+    const regionIntro = document.getElementById("regionIntro");
+
+const regionDescriptions = {
+  "Europe": "Jewish communities in Europe faced persecution for centuries, culminating in the Holocaust and communist oppression, which led many to emigrate. Today, vibrant Jewish communities remain, particularly in France and the UK. Ashkenazi cuisine reflects local ingredients, with dishes like borscht in Eastern Europe and vegetable-based meals in Italy.",
+  "Middle East": "Jews have lived in the Middle East since Avraham, who is believed to have lived in Ur (modern Iraq). After the exile from Israel, Jewish communities thrived in Iran, Iraq, and Egypt. In the 20th century, most Jews left due to persecution, with many settling in Israel. Traditional Persian dishes like Ghormeh Sabzi and Gondi remain popular.",
+
+  "North America": "Jewish immigration to North America grew significantly in the 20th century, especially after World War II. Seeking freedom and opportunity, Jews established vibrant communities, influencing culture and cuisine with dishes like cholent and rugelach.",
+
+  "Asia": "Jewish communities have existed in Asia for centuries, notably in Iran, India, and China. In the mid-20th century, many left due to political changes, settling in Israel and the U.S. Today, small but active communities remain, especially in India and China, maintaining traditions like Bene Israel malida ceremonies and Kaifeng Jews’ distinct Passover customs.",
+  "South America": "Jews have been flocking towards South America as early as 1492, escaping from persecution in Europe. South America provided a place of refuge for Jews escaping nazi persecution during WW2, and about half a million Jews came to South America in the later parts of the 1903s. With both Ashkenaz and Sephardic Jews in Latin America, you can find Yiddish theater and Ladino poetic music. Nowadays you can find chile-infused matzo ball soup a variation of Moroccan shabbat stew Dafina, and swapping chickpeas with wheat dumplings.",
+  "Africa": "Jewish communities thrived in North Africa for centuries, especially in Morocco, Tunisia, and Egypt. In the mid-20th century, most Jews left due to political changes, with many moving to Israel and France. Today, small but active communities remain, particularly in Morocco and South Africa, preserving traditions like mimouna celebrations after Passover and unique North African challah recipes with anise and sesame.",
+};
+
+if (region && regionDescriptions[region]) {
+  regionIntro.innerHTML = `
+    <p style="padding: 1em; background: #fffbe6; border-left: 4px solid #e0a800; font-size: 1rem;">
+      ${regionDescriptions[region]}
+    </p>
+  `;
+}
+
 
     const resultsDiv = document.getElementById('results');
     const recipes = JSON.parse(localStorage.getItem('recipes') || '[]');
@@ -48,9 +74,39 @@
   <p><em>Posted by: ${recipe.author}</em></p>
   <button class="edit-btn">Edit</button>
   <button class="delete-btn">Delete</button>
+  <button class="save-btn">Save</button>
+
 `;
 
         resultsDiv.appendChild(card);
+      
+        const saveBtn = card.querySelector('.save-btn');
+  saveBtn.addEventListener('click', () => {
+    let savedRecipes = JSON.parse(localStorage.getItem('savedRecipes') || '[]');
+
+    // Build a recipe object from this card's data
+    const recipeObj = {
+      title: recipe.title,
+      story: recipe.story,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      image: recipe.image,
+      region: recipe.region,
+      kashrut: recipe.kashrut,
+      holiday: recipe.holiday,
+      author: recipe.author
+    };
+
+    // Check if it's already saved (by title, for instance)
+    if (!savedRecipes.some(r => r.title === recipeObj.title)) {
+      savedRecipes.push(recipeObj);
+      localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+      alert('Recipe saved!');
+    } else {
+      alert('This recipe is already saved.');
+    }
+});
+
         card.querySelector('.delete-btn').addEventListener('click', () => {
   const allRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
   const updated = allRecipes.filter(r =>

@@ -12,8 +12,6 @@
     <header>
         <a href="index.html">
             <img src="Chewish-Logo.png" alt="Chewish Logo" id="logo">
-            <h2 style="color: red; text-align: center;">HELLO!</h2>
-
           </a>
           
         <div id="searchContainer">
@@ -71,6 +69,13 @@
               </header>
 
     <main>
+        <!-- For example, add this inside the header -->
+
+   
+    <nav>
+      <button onclick="window.location.href='saved.html'" id="savedRecipesBtn">Saved Recipes</button>
+    </nav>
+  
         <section id="trending">
             <h2>🔥 Trending Recipes</h2>
             <div id="trending-recipes">
@@ -78,6 +83,16 @@
                 <p>No recipes yet. Add one soon!</p>
             </div>
         </section>
+        
+        
+        <section id="holiday-prep">
+            <h2>🕯️ Get Ready for the Holidays</h2>
+            <div id="holiday-recipes">
+                <!-- Holiday recipes will go here -->
+                <p>Recipes for upcoming holidays will appear here.</p>
+            </div>
+        </section>
+
         <section id="upload-recipe">
             <h2>📤 Upload Your Family Recipe</h2>
             <form id="recipeForm">
@@ -111,6 +126,8 @@
   <option value="Purim">Purim</option>
   <option value="Pesach">Pesach</option>
   <option value="Shavuot">Shavuot</option>
+  <option value="Everyday">Everyday</option>
+
 </select><br><br>
 
                 <label>Recipe Title:</label><br>
@@ -140,18 +157,10 @@
             <h2>📚 Uploaded Recipes</h2>
             <div id="recipeList"></div>
         </section>
-        
-        <section id="holiday-prep">
-            <h2>🕯️ Get Ready for the Holidays</h2>
-            <div id="holiday-recipes">
-                <!-- Holiday recipes will go here -->
-                <p>Recipes for upcoming holidays will appear here.</p>
-            </div>
-        </section>
     </main>
 
     <footer>
-        <button onclick="goToMap()">🌍 Explore the Map</button>
+       
     </footer>
 
     <script src="script.js"></script>
@@ -160,8 +169,4 @@
 
 <!-- ^^^^ This code creates the basic trending and getting ready for the holdiays tab and also the basic search bar -->
 
-<section id="uploaded-recipes">
-    <h2>📚 Uploaded Recipes</h2>
-    <div id="recipeList"></div>
-  </section>
   

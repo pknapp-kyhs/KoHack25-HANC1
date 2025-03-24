@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Saved Recipes</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Header with a logo and navigation -->
+  <header>
+    <a href="index.html" id="logoLink">
+      <img src="chewish-logo.png" alt="Chewish Logo" id="chewishLogo">
+    </a>
+    <h1>Saved Recipes</h1>
+  </header>
+  
+  <main>
+    <div id="savedRecipesContainer"></div>
+  </main>
+
+  <script>
+    // 1. Get saved recipes from localStorage
+    let savedRecipes = JSON.parse(localStorage.getItem('savedRecipes') || '[]');
+    const container = document.getElementById('savedRecipesContainer');
+
+    // 2. If no saved recipes, show a message
+    if (savedRecipes.length === 0) {
+      container.innerHTML = "<p>No recipes saved yet. Go save some!</p>";
+    } else {
+      // 3. For each saved recipe, build a card
+      savedRecipes.forEach(recipe => {
+        const card = document.createElement('div');
+        card.className = 'recipe-card';
+        card.innerHTML = `
+          <h3>
+            <a href="recipe.html?title=${encodeURIComponent(recipe.title)}" class="recipe-link">
+              ${recipe.title}
+            </a>
+          </h3>
+          ${recipe.image ? `<img src="${recipe.image}" alt="Recipe Image">` : ""}
+          <p><strong>🌍 Region:</strong> ${recipe.region} | <strong>🧀 Kosher Type:</strong> ${recipe.kashrut} | <strong>🕯️ Holiday:</strong> ${recipe.holiday}</p>
+          <h4>📝 Family Story</h4>
+          <p>${recipe.story}</p>
+          <h4>🧂 Ingredients</h4>
+          <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+          <h4>🍳 Instructions</h4>
+          <p>${recipe.instructions}</p>
+          <p><em>Posted by: ${recipe.author}</em></p>
+          <button class="remove-btn">Remove</button>
+        `;
+        
+        container.appendChild(card);
+
+        // 4. Handle "Remove" button click
+        const removeBtn = card.querySelector('.remove-btn');
+        removeBtn.addEventListener('click', () => {
+          // Filter out this recipe from the savedRecipes array
+          savedRecipes = savedRecipes.filter(r => r.title !== recipe.title);
+
+          // Save the updated array to localStorage
+          localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+
+          // Remove the card from the page
+          card.remove();
+        });
+      });
+    }
+  </script>
+</body>
+</html>

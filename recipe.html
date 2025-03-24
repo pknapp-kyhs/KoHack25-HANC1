@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <header>
+        
+      </header>
+      
+  <meta charset="UTF-8" />
+  <title>Recipe Details</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a href="index.html" id="back">← Back to Home</a>
+  <main>
+    <div id="singleRecipe"></div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const title = params.get("title");
+    const recipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+
+    const match = recipes.find(r => r.title === title);
+
+    const container = document.getElementById("singleRecipe");
+
+    if (!match) {
+      container.innerHTML = "<p>Recipe not found.</p>";
+    } else {
+      const card = document.createElement("div");
+      card.className = "recipe-card";
+      card.innerHTML = `
+        <h2>${match.title}</h2>
+        ${match.image ? `<img src="${match.image}" alt="Recipe Image">` : ''}
+        <p><strong>🌍 Region:</strong> ${match.region} | <strong>🧀 Kosher Type:</strong> ${match.kashrut} | <strong>🕯️ Holiday:</strong> ${match.holiday}</p>
+        <h4>📝 Family Story</h4>
+        <p>${match.story}</p>
+        <h4>🧂 Ingredients</h4>
+        <ul>${match.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+        <h4>🍳 Instructions</h4>
+        <p>${match.instructions}</p>
+        <p><em>Posted by: ${match.author}</em></p>
+      `;
+      container.appendChild(card);
+    }
+  </script>
+</body>
+</html>

@@ -1,3 +1,74 @@
+const jewishHolidays2025 = [
+    { name: "Purim", date: "2025-03-14" },
+    { name: "Pesach", date: "2025-04-12" },
+    { name: "Shavuot", date: "2025-06-01" },
+    { name: "Rosh Hashanah", date: "2025-10-02" },
+    { name: "Yom Kippur", date: "2025-10-11" },
+    { name: "Sukkot", date: "2025-10-16" },
+    { name: "Chanukah", date: "2025-12-21" }
+  ];
+  function getNextHoliday() {
+    const today = new Date();
+  
+    for (const holiday of jewishHolidays2025) {
+      const holidayDate = new Date(holiday.date);
+      if (holidayDate >= today) {
+        return holiday.name;
+      }
+    }
+  
+    return null; // no holidays left
+  }
+  function showHolidayPrep() {
+    const holidayName = getNextHoliday();
+    const container = document.getElementById("holiday-recipes");
+    container.innerHTML = "";
+  
+    if (!holidayName) {
+      container.innerHTML = "<p>No upcoming holidays!</p>";
+      return;
+    }
+  
+    const allRecipes = JSON.parse(localStorage.getItem("recipes") || "[]");
+  
+    // Filter recipes for this holiday
+    const holidayRecipes = allRecipes
+      .map(recipe => {
+        const rating = parseInt(localStorage.getItem(`rating-${recipe.title}`)) || 0;
+        return { ...recipe, rating };
+      })
+      .filter(recipe => recipe.holiday === holidayName);
+  
+    if (holidayRecipes.length === 0) {
+      container.innerHTML = `<p>No recipes yet for ${holidayName}. Add one!</p>`;
+      return;
+    }
+  
+    // Sort by rating
+    holidayRecipes.sort((a, b) => b.rating - a.rating);
+    const top = holidayRecipes[0];
+  
+    const card = document.createElement("div");
+    card.className = "recipe-card";
+    card.innerHTML = `
+      <h3>
+        <a href="recipe.html?title=${encodeURIComponent(top.title)}" class="recipe-link">
+          ${top.title}
+        </a>
+        <span class="rating">${'★'.repeat(top.rating)}${'☆'.repeat(5 - top.rating)}</span>
+      </h3>
+      ${top.image ? `<img src="${top.image}" alt="Recipe Image">` : ""}
+      <p><strong>🌍 Region:</strong> ${top.region} | <strong>🧀 Kosher Type:</strong> ${top.kashrut}</p>
+      <h4>📝 Family Story</h4>
+      <p>${top.story}</p>
+    `;
+  
+    container.innerHTML = `<h3>🌟 Top Recipe for ${holidayName}</h3>`;
+    container.appendChild(card);
+  }
+      
+
+
 function filterRecipes() {
     const input = document.getElementById('searchInput').value.toLowerCase();
     console.log("Search for:", input); // placeholder for search logic
@@ -32,21 +103,81 @@ document.getElementById('recipeForm').addEventListener('submit', function (e) {
         recipeCard.className = 'recipe-card';
 
         recipeCard.innerHTML = `
-            <h3>${title}</h3>
-            ${imageHTML}
-            <p><strong>🌍 Region:</strong> ${region} | <strong>🧀 Kosher Type:</strong> ${kashrut} | <strong>🕯️ Holiday:</strong> ${holiday}</p>
-            <h4>📝 Family Story</h4>
-            <p>${story}</p>
-            <h4>🧂 Ingredients</h4>
-            <ul>${ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>
-            <h4>🍳 Instructions</h4>
-            <p>${instructions}</p>
-            <p><em>Posted by: ${author}</em></p>
-            <button class="edit-btn">Edit</button>
-            <button class="delete-btn">Delete</button>
-        `;
+        <h3>
+          ${title}
+          <span class="rating" data-title="${title}">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </span>
+        </h3>
+        ${imageHTML}
+        <p><strong>🌍 Region:</strong> ${region} | <strong>🧀 Kosher Type:</strong> ${kashrut} | <strong>🕯️ Holiday:</strong> ${holiday}</p>
+        <h4>📝 Family Story</h4>
+        <p>${story}</p>
+        <h4>🧂 Ingredients</h4>
+        <ul>${ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>
+        <h4>🍳 Instructions</h4>
+        <p>${instructions}</p>
+        <p><em>Posted by: ${author}</em></p>
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn">Delete</button>
+        <button class="save-btn">Save</button>
+      `;
+      
 
         document.getElementById('recipeList').appendChild(recipeCard);
+        // Set up the save button functionality
+const saveBtn = recipeCard.querySelector('.save-btn');
+saveBtn.addEventListener('click', () => {
+  // Retrieve the saved recipes from localStorage (or initialize an empty array)
+  let savedRecipes = JSON.parse(localStorage.getItem('savedRecipes') || '[]');
+
+  // Check if this recipe is already saved (we'll use title as a unique key)
+  if (!savedRecipes.some(r => r.title === title)) {
+    // Create an object for the recipe
+    const recipeObj = {
+      title, story, ingredients, instructions,
+      image: imageFile ? imageHTML.match(/src="([^"]+)"/)?.[1] : "",
+      region, kashrut, holiday, author
+    };
+
+    // Add it to the savedRecipes array and save it back to localStorage
+    savedRecipes.push(recipeObj);
+    localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+    alert('Recipe saved!');
+  } else {
+    alert('This recipe is already saved.');
+  }
+});
+        // ⭐ Enable star rating
+const ratingEl = recipeCard.querySelector('.rating');
+if (ratingEl) {
+  const recipeKey = ratingEl.dataset.title;
+  const savedRating = localStorage.getItem(`rating-${recipeKey}`);
+
+  const stars = ratingEl.querySelectorAll('.star');
+  stars.forEach(star => {
+    const starValue = parseInt(star.dataset.value);
+
+    // Fill in saved stars
+    if (savedRating && starValue <= savedRating) {
+      star.textContent = '★';
+    }
+
+    // On click: update the rating
+    star.addEventListener('click', () => {
+      localStorage.setItem(`rating-${recipeKey}`, starValue);
+
+      stars.forEach(s => {
+        s.textContent = parseInt(s.dataset.value) <= starValue ? '★' : '☆';
+      });
+    });
+  });
+}
+
 
         // Save to localStorage
         let recipes = JSON.parse(localStorage.getItem('recipes') || '[]');
@@ -56,6 +187,8 @@ document.getElementById('recipeForm').addEventListener('submit', function (e) {
             region, kashrut, holiday, author
         });
         localStorage.setItem('recipes', JSON.stringify(recipes));
+        showTrendingRecipe();
+
 
         // Reset the form
         document.getElementById('recipeForm').reset();
@@ -158,3 +291,48 @@ regions.forEach(region => {
   const marker = L.marker(region.coords).addTo(map);
   marker.bindPopup(`<b>${region.name}</b><br><a href="filter.html?region=${encodeURIComponent(region.name)}">See Recipes</a>`);
 });
+
+function showTrendingRecipe() {
+    const allRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+    const trendingContainer = document.getElementById('trending-recipes');
+    trendingContainer.innerHTML = ''; // Clear old trending card
+  
+    if (allRecipes.length === 0) {
+      trendingContainer.innerHTML = "<p>No recipes yet. Add one soon!</p>";
+      return;
+    }
+  
+    // Get ratings from localStorage
+    const ratedRecipes = allRecipes.map(recipe => {
+      const rating = parseInt(localStorage.getItem(`rating-${recipe.title}`)) || 0;
+      return { ...recipe, rating };
+    });
+  
+    // Find highest-rated recipe
+    ratedRecipes.sort((a, b) => b.rating - a.rating);
+    const topRecipe = ratedRecipes[0];
+  
+    // Create trending card
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+    card.innerHTML = `
+  <h3>
+    <a href="recipe.html?title=${encodeURIComponent(topRecipe.title)}" class="recipe-link">
+      ${topRecipe.title}
+    </a>
+    <span class="rating">${'★'.repeat(topRecipe.rating)}${'☆'.repeat(5 - topRecipe.rating)}</span>
+  </h3>
+  ${topRecipe.image ? `<img src="${topRecipe.image}" alt="Recipe Image">` : ''}
+  <p><strong>🌍 Region:</strong> ${topRecipe.region} | <strong>🧀 Kosher Type:</strong> ${topRecipe.kashrut} | <strong>🕯️ Holiday:</strong> ${topRecipe.holiday}</p>
+  <h4>📝 Family Story</h4>
+  <p>${topRecipe.story}</p>
+`;
+
+
+  
+    trendingContainer.appendChild(card);
+  }
+  
+  showTrendingRecipe();
+
+  showHolidayPrep();
